@@ -1,6 +1,9 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+import java.util.List;
 public class AnagramSolver {
 
     private AnagramSolver() {};
@@ -12,8 +15,22 @@ public class AnagramSolver {
      * @return
      */
     public static HashMap<String, ArrayList<String>> anagrams(String filename) {
-        return null;
+        HashMap<String, ArrayList<String>> Maps = new HashMap<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String word;
+            while ((word = reader.readLine()) != null) {
+                String sortedWord = sortString(word);
+                Maps.putIfAbsent(sortedWord, new ArrayList<>());
+                Maps.get(sortedWord).add(word);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Maps;
     }
+
+
 
     /**
      * Input: hashmap of lists of words that are anagrams.
@@ -22,7 +39,16 @@ public class AnagramSolver {
      * @return
      */
     public static ArrayList<String> mostFrequentAnagram(HashMap<String, ArrayList<String>> anagrams) {
-        return null;
+        int Max  = 0;
+        ArrayList<String> frequentList = new ArrayList<>();
+
+        for (ArrayList<String> anagramList : anagrams.values()) {
+            if (anagramList.size() > Max) {
+                Max = anagramList.size();
+                frequentList = anagramList;
+            }
+        }
+        return frequentList;
     }
 
     /**
@@ -31,7 +57,13 @@ public class AnagramSolver {
      * @param anagrams
      */
     public static void printKeyValuePairs(HashMap<String, ArrayList<String>> anagrams) {
-
+        for (String key : anagrams.keySet()) {
+            System.out.println(key + ": " + anagrams.get(key));
+        }
     }
-
+    private static String sortString(String input) {
+        char[] charArray = input.toCharArray();
+        java.util.Arrays.sort(charArray);
+        return new String(charArray);
+    }
 }
